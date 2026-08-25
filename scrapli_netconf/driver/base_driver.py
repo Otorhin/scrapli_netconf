@@ -39,6 +39,7 @@ class NetconfBaseOperations(Enum):
     COMMIT_CONFIRMED_TIMEOUT = "<confirm-timeout>{timeout}</confirm-timeout>"
     COMMIT_CONFIRMED_PERSIST = "<persist>{persist}</persist>"
     COMMIT_PERSIST_ID = "<persist-id>{persist_id}</persist-id>"
+    COMMIT_COMMENT = "<comment>{comment}</comment>"
     DISCARD = "<discard-changes/>"
     LOCK = "<lock><target><{target}/></target></lock>"
     UNLOCK = "<unlock><target><{target}/></target></unlock>"
@@ -778,6 +779,7 @@ class NetconfBaseDriver(BaseDriver):
         timeout: Optional[int] = None,
         persist: Optional[Union[int, str]] = None,
         persist_id: Optional[Union[int, str]] = None,
+        comment: Optional[str] = None,
     ) -> NetconfResponse:
         """
         Handle pre "commit" tasks for consistency between sync/async versions
@@ -853,6 +855,15 @@ class NetconfBaseDriver(BaseDriver):
                 parser=self.xml_parser,
             )
             xml_commit_element.append(xml_persist_id_element)
+
+        if comment is not None:
+            if len(comment) > 512:
+                raise ScrapliValueError("Comment too long (len 512 max)")
+            xml_comment_element = etree.fromstring(
+                NetconfBaseOperations.COMMIT_COMMENT.value.format(comment=comment),
+                parser=self.xml_parser,
+            )
+            xml_commit_element.append(xml_comment_element)
 
         xml_request.insert(0, xml_commit_element)
 
