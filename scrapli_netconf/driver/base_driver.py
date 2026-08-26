@@ -39,7 +39,7 @@ class NetconfBaseOperations(Enum):
     COMMIT_CONFIRMED_TIMEOUT = "<confirm-timeout>{timeout}</confirm-timeout>"
     COMMIT_CONFIRMED_PERSIST = "<persist>{persist}</persist>"
     COMMIT_PERSIST_ID = "<persist-id>{persist_id}</persist-id>"
-    COMMIT_COMMENT = "<comment>{comment}</comment>"
+    COMMIT_COMMENT = "<log>{comment}</log>"
     DISCARD = "<discard-changes/>"
     LOCK = "<lock><target><{target}/></target></lock>"
     UNLOCK = "<unlock><target><{target}/></target></unlock>"
